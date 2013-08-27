@@ -29,15 +29,13 @@ public class Bot extends PircBot {
     @Override
     protected void onMessage(String channel, String sender, String login, String hostName, String message) {
         super.onMessage(channel, sender, login, hostName, message);
-        if(!Pattern.compile("^ud ").matcher(message).matches()){
+        if(message.substring(0, 2).equals("ud ")){
             return;
         }
+        message = message.substring(3, message.length());
+        System.out.println(message);
         HttpClient client = new DefaultHttpClient();
         try {
-            String[] messages  = message.split(" ");
-            for(int i =1; i < messages.length; i++){
-                message += messages[i] + " ";
-            }
             final HttpGet request = new HttpGet("http://api.urbandictionary.com/v0/define?term=" + URLEncoder.encode(message, "UTF-8"));
             HttpResponse response = client.execute(request);
             BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
@@ -53,11 +51,11 @@ public class Bot extends PircBot {
                 return;
             }
 
-            sendMessage(channel, "Definition:");
+            sendMessage(channel, "Definitions:");
             for(String definition :json.getJSONArray("list").getJSONObject(0).getString("definition").split("\n")){
               sendMessage(channel, "  " + definition);
             }
-            sendMessage(channel, "Example:");
+            sendMessage(channel, "Examples:");
             for(String example: json.getJSONArray("list").getJSONObject(0).getString("example").split("\n")){
                 sendMessage(channel, "  " + example);
             }
