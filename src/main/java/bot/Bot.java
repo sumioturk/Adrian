@@ -29,7 +29,7 @@ public class Bot extends PircBot {
     @Override
     protected void onMessage(String channel, String sender, String login, String hostName, String message) {
         super.onMessage(channel, sender, login, hostName, message);
-        if(message.substring(0, 2).equals("ud ")){
+        if(!message.substring(0, 3).equals("ud ")){
             return;
         }
         message = message.substring(3, message.length());
